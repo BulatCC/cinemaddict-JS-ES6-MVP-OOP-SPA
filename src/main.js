@@ -4,7 +4,8 @@
 //   container.insertAdjacentHTML(place, template);
 // };
 
-// const siteMainElement = document.querySelector(`.main`);
+// const siteHeaderTag = document.querySelector(`.header`);
+// const siteMainTag = document.querySelector(`.main`);
 
 
 // render(siteHeaderElement, createSiteMenuTemplate(), `beforeend`);
