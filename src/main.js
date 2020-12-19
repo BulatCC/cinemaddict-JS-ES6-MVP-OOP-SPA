@@ -6,6 +6,7 @@ import FilmCard from "./view/film-card-template.js";
 import ShowMoreButton from "./view/show-more-button-template.js";
 import MoviesNumber from "./view/movies-number-template.js";
 import PopupFilmDetails from "./view/popup-film-details-template.js";
+import NoFilms from "./view/no-films-template.js";
 import {generateFilm} from "./mock/film-data.js";
 import {ESC_KEYCODE, siteBodyTag, siteHeaderTag, siteMainTag, render} from "./utils.js";
 
@@ -18,7 +19,9 @@ let closeButton = null;
 
 render(siteHeaderTag, new UserProfile().getElement(), `beforeend`);
 render(siteMainTag, new Navigation().getElement(), `beforeend`);
-render(siteMainTag, new Sort().getElement(), `beforeend`);
+if (films.length !== 0) {
+  render(siteMainTag, new Sort().getElement(), `beforeend`);
+}
 render(siteMainTag, new FilmSection().getElement(), `beforeend`);
 
 const filmsList = document.querySelector(`.films-list__container`);
@@ -66,6 +69,11 @@ const renderCard = (cardListElement, card) => {
 
 // рендерит фильмы
 const showFilms = (filmsToRender) => {
+
+  if (filmsToRender.length === 0) {
+    render(filmsList, new NoFilms().getElement(), `beforeend`);
+    return;
+  }
 
   for (let i = 0; i < FILM_CARD_COUNT_PER_STEP; i++) {
     renderCard(filmsList, filmsToRender[i], `beforeend`);
