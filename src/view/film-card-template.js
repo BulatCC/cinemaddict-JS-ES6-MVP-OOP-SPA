@@ -1,8 +1,10 @@
-export const filmCardTemplate = (film, i) => {
+import {createElement} from "../utils.js";
+
+const filmCardTemplate = (film) => {
   const {filmCover, filmName, rating, releaseDate: {day, month, year}, duration: {minutes, hours}, description, isInWatchlist, isWatched, isFavorite, comments, genre} = film;
   const DESCRIPTION_LENGTH = 140;
 
-  return `<article class="film-card" data-id="${i}" data-isinwatchlist="${isInWatchlist === true ? `true` : `false`}" data-iswatched="${isWatched === true ? `true` : `false`}"  data-isfavorite="${isFavorite === true ? `true` : `false`}" data-rating="${rating}" data-date="${year + ` ` + month + ` ` + day}">
+  return `<article class="film-card" data-isinwatchlist="${isInWatchlist === true ? `true` : `false`}" data-iswatched="${isWatched === true ? `true` : `false`}"  data-isfavorite="${isFavorite === true ? `true` : `false`}" data-rating="${rating}" data-date="${year + ` ` + month + ` ` + day}">
   <h3 class="film-card__title">${filmName}</h3>
   <p class="film-card__rating">${rating}</p>
   <p class="film-card__info">
@@ -20,3 +22,27 @@ export const filmCardTemplate = (film, i) => {
   </div>
 </article>`;
 };
+
+export default class FilmCard {
+  constructor(film, i) {
+    this._element = null;
+    this._film = film;
+    this._i = i;
+  }
+
+  getTemplate() {
+    return filmCardTemplate(this._film, this._i);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
