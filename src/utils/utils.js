@@ -22,22 +22,14 @@ export const getRandomElements = (arr, toString = false) => {
   return Array.from(set);
 };
 
-export const renderTemplate = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
+// export const renderTemplate = (container, template, place) => {
+//   container.insertAdjacentHTML(place, template);
+// };
 
 // export const RenderPosition = {
 //   AFTERBEGIN: `afterbegin`,
 //   BEFOREEND: `beforeend`
 // };
-
-export const render = (container, element, place) => {
-  if (place === `beforeend`) {
-    container.append(element);
-  } else {
-    container.after(element);
-  }
-};
 
 // export const renderElement = (container, element, place) => {
 //   switch (place) {

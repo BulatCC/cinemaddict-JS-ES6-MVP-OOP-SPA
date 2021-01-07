@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import AbstractView from "./abstract-view.js";
 
 const popupFilmDetailsTemplate = (film) => {
   const {filmCover, ageLimit, filmName, originalFilmName, rating, director, writer, actors, releaseDate: {day, month, year}, duration: {minutes, hours}, country, genre, description, isInWatchlist, isWatched, isFavorite, comments} = film;
@@ -149,25 +149,24 @@ const popupFilmDetailsTemplate = (film) => {
 </section>`;
 };
 
-export default class PopupFilmDetails {
+export default class PopupFilmDetails extends AbstractView {
   constructor(film) {
-    this._element = null;
+    super();
     this._film = film;
+    this._closePopupClickHandler = this._closePopupClickHandler.bind(this);
   }
 
   getTemplate() {
     return popupFilmDetailsTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _closePopupClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.closePopupClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setClosePopupClickHandler(callback) {
+    this._callback.closePopupClick = callback;
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._closePopupClickHandler);
   }
 }

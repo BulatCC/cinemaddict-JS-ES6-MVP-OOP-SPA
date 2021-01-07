@@ -8,7 +8,8 @@ import MoviesNumber from "./view/movies-number-template.js";
 import PopupFilmDetails from "./view/popup-film-details-template.js";
 import NoFilms from "./view/no-films-template.js";
 import {generateFilm} from "./mock/film-data.js";
-import {ESC_KEYCODE, siteBodyTag, siteHeaderTag, siteMainTag, render} from "./utils.js";
+import {ESC_KEYCODE, siteBodyTag, siteHeaderTag, siteMainTag} from "./utils/utils.js";
+import {render} from "./utils/render.js";
 
 const FILM_CARD_COUNT = 24;
 const FILM_CARD_COUNT_PER_STEP = 5;
@@ -83,8 +84,7 @@ const showFilms = (filmsToRender) => {
     let renderedFilmCount = FILM_CARD_COUNT_PER_STEP;
     render(filmsList, loadMoreButton.getElement(), `afterbegin`);
 
-    loadMoreButton.getElement().addEventListener(`click`, (evt) => {
-      evt.preventDefault();
+    loadMoreButton.setClickHandler(() => {
       filmsToRender.slice(renderedFilmCount, renderedFilmCount + FILM_CARD_COUNT_PER_STEP)
       .forEach((film) => renderCard(filmsList, film, `beforeend`));
 
