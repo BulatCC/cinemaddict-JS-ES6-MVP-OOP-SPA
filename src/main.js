@@ -16,7 +16,6 @@ const FILM_CARD_COUNT_PER_STEP = 5;
 const FILM_CARD_COUNT_EXTRA = 2;
 const moviesNumberinDB = document.querySelector(`.footer__statistics`);
 const films = new Array(FILM_CARD_COUNT).fill().map(generateFilm);
-let closeButton = null;
 
 render(siteHeaderTag, new UserProfile().getElement(), `beforeend`);
 render(siteMainTag, new Navigation().getElement(), `beforeend`);
@@ -35,8 +34,9 @@ const showPopup = (evt) => {
   if (evt.target.classList.contains(`film-card__title`) || evt.target.classList.contains(`film-card__poster`) || evt.target.classList.contains(`film-card__comments`)) {
     let popupDetails = new PopupFilmDetails(films[0]);
     render(siteBodyTag, popupDetails.getElement(), `beforeend`);
-    closeButton = popupDetails.getElement().querySelector(`.film-details__close-btn`);
-    closeButton.addEventListener(`click`, removePopup);
+    popupDetails.setClosePopupClickHandler(() => {
+      removePopup();
+    });
     siteBodyTag.classList.add(`hide-overflow`);
     document.addEventListener(`keydown`, onEscKeyPopupRemove);
   }
@@ -49,7 +49,7 @@ const removePopup = () => {
   if (popup) {
     popup.remove();
   }
-  closeButton.removeEventListener(`click`, removePopup);
+  // closeButton.removeEventListener(`click`, removePopup);
   document.removeEventListener(`keydown`, onEscKeyPopupRemove);
 };
 
@@ -63,7 +63,7 @@ const renderCard = (cardListElement, card) => {
   const cardComponent = new FilmCard(card);
   render(cardListElement, cardComponent.getElement(), `beforeend`);
 
-  cardComponent.getElement().addEventListener(`click`, (evt) => {
+  cardComponent.setOpenPopupClickHandler((evt) => {
     showPopup(evt);
   });
 };
