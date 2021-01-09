@@ -8,14 +8,14 @@ import MoviesNumber from "./view/movies-number-template.js";
 import PopupFilmDetails from "./view/popup-film-details-template.js";
 import NoFilms from "./view/no-films-template.js";
 import {generateFilm} from "./mock/film-data.js";
-import {ESC_KEYCODE, siteBodyTag, siteHeaderTag, siteMainTag, render} from "./utils.js";
+import {ESC_KEYCODE, siteBodyTag, siteHeaderTag, siteMainTag} from "./utils/utils.js";
+import {render} from "./utils/render.js";
 
 const FILM_CARD_COUNT = 24;
 const FILM_CARD_COUNT_PER_STEP = 5;
 const FILM_CARD_COUNT_EXTRA = 2;
 const moviesNumberinDB = document.querySelector(`.footer__statistics`);
 const films = new Array(FILM_CARD_COUNT).fill().map(generateFilm);
-let closeButton = null;
 
 render(siteHeaderTag, new UserProfile().getElement(), `beforeend`);
 render(siteMainTag, new Navigation().getElement(), `beforeend`);
@@ -34,8 +34,9 @@ const showPopup = (evt) => {
   if (evt.target.classList.contains(`film-card__title`) || evt.target.classList.contains(`film-card__poster`) || evt.target.classList.contains(`film-card__comments`)) {
     let popupDetails = new PopupFilmDetails(films[0]);
     render(siteBodyTag, popupDetails.getElement(), `beforeend`);
-    closeButton = popupDetails.getElement().querySelector(`.film-details__close-btn`);
-    closeButton.addEventListener(`click`, removePopup);
+    popupDetails.setClosePopupClickHandler(() => {
+      removePopup();
+    });
     siteBodyTag.classList.add(`hide-overflow`);
     document.addEventListener(`keydown`, onEscKeyPopupRemove);
   }
@@ -48,7 +49,7 @@ const removePopup = () => {
   if (popup) {
     popup.remove();
   }
-  closeButton.removeEventListener(`click`, removePopup);
+  // closeButton.removeEventListener(`click`, removePopup);
   document.removeEventListener(`keydown`, onEscKeyPopupRemove);
 };
 
@@ -62,7 +63,7 @@ const renderCard = (cardListElement, card) => {
   const cardComponent = new FilmCard(card);
   render(cardListElement, cardComponent.getElement(), `beforeend`);
 
-  cardComponent.getElement().addEventListener(`click`, (evt) => {
+  cardComponent.setOpenPopupClickHandler((evt) => {
     showPopup(evt);
   });
 };
@@ -83,8 +84,7 @@ const showFilms = (filmsToRender) => {
     let renderedFilmCount = FILM_CARD_COUNT_PER_STEP;
     render(filmsList, loadMoreButton.getElement(), `afterbegin`);
 
-    loadMoreButton.getElement().addEventListener(`click`, (evt) => {
-      evt.preventDefault();
+    loadMoreButton.setClickHandler(() => {
       filmsToRender.slice(renderedFilmCount, renderedFilmCount + FILM_CARD_COUNT_PER_STEP)
       .forEach((film) => renderCard(filmsList, film, `beforeend`));
 
