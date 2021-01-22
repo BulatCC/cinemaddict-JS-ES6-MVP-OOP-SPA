@@ -67,7 +67,8 @@ const generateFilm = () => {
     isInWatchlist: Boolean(getRandomInteger(0, 1)),
     isWatched: Boolean(getRandomInteger(0, 1)),
     isFavorite: Boolean(getRandomInteger(0, 1)),
-    comments: generateComment()
+    comments: generateComment(),
+    id: getRandomInteger(0, 1000)
   };
 };
 
