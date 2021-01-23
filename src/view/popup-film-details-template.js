@@ -1,4 +1,5 @@
 import AbstractView from "./abstract-view.js";
+import {siteBodyTag} from "../utils/utils.js";
 
 const popupFilmDetailsTemplate = (film) => {
   const {filmCover, ageLimit, filmName, originalFilmName, rating, director, writer, actors, releaseDate: {day, month, year}, duration: {minutes, hours}, country, genre, description, isInWatchlist, isWatched, isFavorite, comments} = film;
@@ -154,6 +155,9 @@ export default class PopupFilmDetails extends AbstractView {
     super();
     this._film = film;
     this._closePopupClickHandler = this._closePopupClickHandler.bind(this);
+    this._watchListClickHandler = this._watchListClickHandler.bind(this);
+    this._watchedClickHandler = this._watchedClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -163,10 +167,46 @@ export default class PopupFilmDetails extends AbstractView {
   _closePopupClickHandler(evt) {
     evt.preventDefault();
     this._callback.closePopupClick();
+    siteBodyTag.classList.remove(`hide-overflow`);
   }
 
-  setClosePopupClickHandler(callback) {
+  _watchListClickHandler(evt) {
+    this._callback.watchListClick(evt);
+  }
+
+  _watchedClickHandler(evt) {
+    this._callback.watchedClick(evt);
+  }
+
+  _favoriteClickHandler(evt) {
+    this._callback.favoriteClick(evt);
+  }
+
+
+  setClosePopupHandler(callback) {
     this._callback.closePopupClick = callback;
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._closePopupClickHandler);
+    document.addEventListener(`keydown`, this._closePopupClickHandler);
+  }
+
+  setWatchListClickHandler(callback) {
+    this._callback.watchListClick = callback;
+    this.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, this._watchListClickHandler);
+  }
+
+  setWatchedClickHandler(callback) {
+    this._callback.watchedClick = callback;
+    this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, this._watchedClickHandler);
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, this._favoriteClickHandler);
+  }
+
+  removeClosePopupHandler() {
+    this._callback.closePopupClick = null;
+    this.getElement().querySelector(`.film-details__close-btn`).removeEventListener(`click`, this._closePopupClickHandler);
+    document.removeEventListener(`keydown`, this._closePopupClickHandler);
   }
 }
