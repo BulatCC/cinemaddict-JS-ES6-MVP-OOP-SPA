@@ -1,6 +1,6 @@
-import {render} from "../utils/render";
-import {updateItem} from "../utils/utils";
-import {siteHeaderTag, siteMainTag, moviesNumberInDB, remove} from "../utils/utils.js";
+import {render} from "../utils/render.js";
+import {siteHeaderTag, siteMainTag, moviesNumberInDB, remove, updateItem, sortByDate, sortByRating} from "../utils/utils.js";
+import {SortType} from "../consts.js";
 import UserProfile from "../view/user-profile-template.js";
 import NavigationView from "../view/navigation-template.js";
 import SortView from "../view/sort-template.js";
@@ -16,6 +16,7 @@ export default class FilmBoard {
   constructor() {
     this._filmPresenter = {}; // тут должны храниться презентеры, чтобы иметь возможность удалить их
     this._renderedFilmCount = FILM_CARD_COUNT_PER_STEP;
+    this._currentSortType = SortType.DEFAULT;
     this._navigationComponent = new NavigationView();
     this._userProfileComponent = new UserProfile();
     this._sortViewComponent = new SortView();
@@ -25,6 +26,7 @@ export default class FilmBoard {
     this._loadMoreButtonComponent = new ShowMoreButtonView();
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
     this._handleFilmChange = this._handleFilmChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(filmsData) {
@@ -52,6 +54,7 @@ export default class FilmBoard {
 
   _renderSort() {
     render(siteMainTag, this._sortViewComponent, `beforeend`);
+    this._sortViewComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderFilmSection() {
@@ -114,5 +117,31 @@ export default class FilmBoard {
     this._filmPresenter = {};
     this._renderedFilmCount = FILM_CARD_COUNT_PER_STEP;
     remove(this._loadMoreButtonComponent);
+  }
+
+  _sortFilms(sortType) {
+    this._currentSortType = sortType;
+
+    if (sortType === SortType.DEFAULT) {
+      this._films = this._filmsDefaultSort;
+    }
+
+    if (sortType === SortType.DATE) {
+      this._films.sort(sortByDate);
+    }
+
+    if (sortType === SortType.RATING) {
+      this._films.sort(sortByRating);
+    }
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortFilms(sortType);
+    this._clearFilmList();
+    this._renderFilmsList();
   }
 }

@@ -88,3 +88,11 @@ export const updateFilmCardByPopup = (evt, component) => {
     component.getElement().querySelector(`.film-card__controls-item--favorite`).classList.toggle(`film-card__controls-item--active`);
   }
 };
+
+export const sortByDate = (a, b) => {
+  return Date.parse(b.releaseDate.year + `-` + b.releaseDate.month + `-` + b.releaseDate.day) - Date.parse(a.releaseDate.year + `-` + a.releaseDate.month + `-` + a.releaseDate.day);
+};
+
+export const sortByRating = (a, b) => {
+  return b.rating - a.rating;
+};

@@ -18,15 +18,10 @@ export default class Film {
   }
 
   init(container, filmCardData) {
-    const prevfilmCardComponent = this._filmCardComponent;
-
     this._filmCardData = filmCardData;
     this._filmCardComponent = new FilmCard(filmCardData);
     this._container = container;
-    if (prevfilmCardComponent === null) {
-      this._renderFilmCard();
-      return;
-    }
+    this._renderFilmCard();
   }
 
   _renderFilmCard() {
