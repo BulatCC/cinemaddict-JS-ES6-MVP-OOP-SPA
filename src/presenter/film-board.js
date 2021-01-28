@@ -119,12 +119,9 @@ export default class FilmBoard {
     remove(this._loadMoreButtonComponent);
   }
 
-  
   _sortFilms(sortType) {
     const currentSort = [...this._filmsDefaultSort];
     this._currentSortType = sortType;
-    console.log(currentSort)
-    console.log(this._films)
 
     if (sortType === SortType.DEFAULT) {
       this._films = currentSort;

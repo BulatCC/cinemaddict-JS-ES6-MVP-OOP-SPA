@@ -36,10 +36,10 @@ const popupFilmDetailsTemplate = (film, emojiChoosen) => {
 
   const addEmoji = (emoji) => {
     if (emoji === null) {
-      return ``
+      return ``;
     }
-    return `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">`
-  }
+    return `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">`;
+  };
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -191,11 +191,11 @@ export default class PopupFilmDetails extends SmartView {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       this._callback.escKeyDownClose(evt);
     }
-  };
+  }
 
   _watchListClickHandler(evt) {
     this._callback.watchListClick(evt);
-    this.updateElement()
+    this.updateElement();
   }
 
   _watchedClickHandler(evt) {
@@ -207,9 +207,9 @@ export default class PopupFilmDetails extends SmartView {
   }
 
   _emojiChoiceHandler(evt) {
-    if (evt.target.classList.contains('film-details__emoji-item')) {  
+    if (evt.target.classList.contains(`film-details__emoji-item`)) {
       this._emojiChoosen = evt.target.value;
-      this.updateElement()
+      this.updateElement();
     }
   }
 

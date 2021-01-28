@@ -44,22 +44,11 @@ export default class Film {
       this._popupComponent.setWatchListClickHandler(this._handleWatchListClick);
       this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
       this._popupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
-     // this._popupComponent.setEmojiChoiceHandler(this._handleEmojiChange);
-
-      // const onEscKeyDown = (evt) => {
-      //   if (evt.key === `Escape` || evt.key === `Esc`) {
-      //     evt.preventDefault();
-      //     this._handleRemovePopup();
-      //     document.removeEventListener(`keydown`, onEscKeyDown);
-      //   }
-      // };
-
-      //document.addEventListener('keydown', onEscKeyDown)
     }
   }
 
   _handleEscDownRemovePopup() {
-    this._handleRemovePopup()
+    this._handleRemovePopup();
   }
 
   _handleRemovePopup() {
@@ -72,7 +61,7 @@ export default class Film {
   _handleFilmCardClick() {
     this._renderPopup();
   }
-  
+
   _markChangeState(evt) {
     if (evt.target.classList.contains(`film-card__controls-item`)) {
       evt.target.classList.toggle(`film-card__controls-item--active`);
@@ -107,10 +96,6 @@ export default class Film {
     this._changeData(this._filmCardData);
     this._markChangeState(evt);
   }
-
-  // _handleEmojiChange() {
-
-  // }
 
   destroy() {
     remove(this._filmCardComponent);
