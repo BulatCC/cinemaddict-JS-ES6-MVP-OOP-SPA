@@ -119,11 +119,15 @@ export default class FilmBoard {
     remove(this._loadMoreButtonComponent);
   }
 
+  
   _sortFilms(sortType) {
+    const currentSort = [...this._filmsDefaultSort];
     this._currentSortType = sortType;
+    console.log(currentSort)
+    console.log(this._films)
 
     if (sortType === SortType.DEFAULT) {
-      this._films = this._filmsDefaultSort;
+      this._films = currentSort;
     }
 
     if (sortType === SortType.DATE) {
@@ -136,10 +140,6 @@ export default class FilmBoard {
   }
 
   _handleSortTypeChange(sortType) {
-    if (this._currentSortType === sortType) {
-      return;
-    }
-
     this._sortFilms(sortType);
     this._clearFilmList();
     this._renderFilmsList();
