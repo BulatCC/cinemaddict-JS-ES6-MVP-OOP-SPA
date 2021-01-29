@@ -10,6 +10,7 @@ export default class Film {
     this._changeData = changeData;
     this._handleFilmCardClick = this._handleFilmCardClick.bind(this);
     this._handleRemovePopup = this._handleRemovePopup.bind(this);
+    this._handleEscDownRemovePopup = this._handleEscDownRemovePopup.bind(this);
     this._handleWatchListClick = this._handleWatchListClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -39,10 +40,15 @@ export default class Film {
       this._popupComponent = new PopupFilmDetails(this._filmCardData);
       render(siteBodyTag, this._popupComponent, `beforeend`);
       this._popupComponent.setClosePopupHandler(this._handleRemovePopup);
+      this._popupComponent.setEscDownClosePopupHandler(this._handleEscDownRemovePopup);
       this._popupComponent.setWatchListClickHandler(this._handleWatchListClick);
       this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
       this._popupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     }
+  }
+
+  _handleEscDownRemovePopup() {
+    this._handleRemovePopup();
   }
 
   _handleRemovePopup() {
@@ -55,6 +61,7 @@ export default class Film {
   _handleFilmCardClick() {
     this._renderPopup();
   }
+
   _markChangeState(evt) {
     if (evt.target.classList.contains(`film-card__controls-item`)) {
       evt.target.classList.toggle(`film-card__controls-item--active`);
@@ -68,6 +75,14 @@ export default class Film {
     this._filmCardData.isInWatchlist = !this._filmCardData.isInWatchlist;
     this._changeData(this._filmCardData);
     this._markChangeState(evt);
+
+    // this._changeData(Object.assign(
+    //   {},
+    //   this._filmCardData,
+    //   {
+    //     isInWatchlist: !this._filmCardData.isInWatchlist
+    //   }
+    // ));
   }
 
   _handleWatchedClick(evt) {
