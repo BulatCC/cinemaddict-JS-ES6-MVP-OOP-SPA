@@ -39,7 +39,8 @@ const generateComment = () => {
       emoji: EMOJI[getRandomInteger(0, EMOJI.length - 1)],
       commentText: COMMENT_TEXT[getRandomInteger(0, COMMENT_TEXT.length - 1)],
       commentAuthor: COMMENT_AUTHOR[getRandomInteger(0, COMMENT_AUTHOR.length - 1)],
-      commentDate: generateDate()
+      commentDate: generateDate(),
+      commentId: getRandomInteger(0, 100000)
     });
   }
 

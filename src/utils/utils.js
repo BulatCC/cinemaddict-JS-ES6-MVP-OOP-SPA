@@ -24,32 +24,11 @@ export const getRandomElements = (arr, toString = false) => {
   return Array.from(set);
 };
 
-
-// export const renderTemplate = (container, template, place) => {
-//   container.insertAdjacentHTML(place, template);
-// };
-
-// export const RenderPosition = {
-//   AFTERBEGIN: `afterbegin`,
-//   BEFOREEND: `beforeend`
-// };
-
-// export const renderElement = (container, element, place) => {
-//   switch (place) {
-//     case RenderPosition.AFTERBEGIN:
-//       container.prepend(element);
-//       break;
-//     case RenderPosition.BEFOREEND:
-//       container.append(element);
-//       break;
-//   }
-// };
-
 export const createElement = (template) => {
-  const newElement = document.createElement(`div`); // 1
-  newElement.innerHTML = template; // 2
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
 
-  return newElement.firstChild; // 3
+  return newElement.firstChild;
 };
 
 export const remove = (component) => {
@@ -73,20 +52,6 @@ export const updateItem = (items, update) => {
     update,
     ...items.slice(index + 1)
   ];
-};
-
-export const updateFilmCardByPopup = (evt, component) => {
-  if (evt.target.classList.contains(`film-details__control-label--watchlist`)) {
-    component.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`).classList.toggle(`film-card__controls-item--active`);
-  }
-
-  if (evt.target.classList.contains(`film-details__control-label--watched`)) {
-    component.getElement().querySelector(`.film-card__controls-item--mark-as-watched`).classList.toggle(`film-card__controls-item--active`);
-  }
-
-  if (evt.target.classList.contains(`film-details__control-label--favorite`)) {
-    component.getElement().querySelector(`.film-card__controls-item--favorite`).classList.toggle(`film-card__controls-item--active`);
-  }
 };
 
 export const sortByDate = (a, b) => {

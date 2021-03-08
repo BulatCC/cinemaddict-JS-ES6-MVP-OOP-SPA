@@ -25,7 +25,7 @@ const popupFilmDetailsTemplate = (film, emojiChoosen) => {
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${commentItem.commentAuthor}</span>
           <span class="film-details__comment-day">${commentItem.commentDate.year + `/` + commentItem.commentDate.monthComment + `/` + commentItem.commentDate.day + ` ` + commentItem.commentDate.hour + `:` + commentItem.commentDate.minute}</span>
-          <button class="film-details__comment-delete">Delete</button>
+          <button class="film-details__comment-delete" data-comment-id="${commentItem.commentId}">Delete</button>
         </p>
       </div>
     </li>`);
@@ -170,6 +170,7 @@ export default class PopupFilmDetails extends SmartView {
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._emojiChoiceHandler = this._emojiChoiceHandler.bind(this);
+    this._deleteButtonClickHandler = this._deleteButtonClickHandler.bind(this);
     this.setInnerHandler();
   }
 
@@ -190,12 +191,12 @@ export default class PopupFilmDetails extends SmartView {
   _escDownCloseHandler(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       this._callback.escKeyDownClose(evt);
+      siteBodyTag.classList.remove(`hide-overflow`);
     }
   }
 
   _watchListClickHandler(evt) {
     this._callback.watchListClick(evt);
-    this.updateElement();
   }
 
   _watchedClickHandler(evt) {
@@ -211,6 +212,12 @@ export default class PopupFilmDetails extends SmartView {
       this._emojiChoosen = evt.target.value;
       this.updateElement();
     }
+  }
+
+  _deleteButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteButtonClick(evt.target.dataset.commentId);
+    this.updateElement();
   }
 
   setClosePopupHandler(callback) {
@@ -236,6 +243,11 @@ export default class PopupFilmDetails extends SmartView {
   setFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, this._favoriteClickHandler);
+  }
+
+  setDeleteButtonClickHandler(callback) {
+    this._callback.deleteButtonClick = callback;
+    this.getElement().querySelectorAll(`.film-details__comment-delete`).forEach((button) => (button.addEventListener(`click`, this._deleteButtonClickHandler)));
   }
 
   setInnerHandler() {
