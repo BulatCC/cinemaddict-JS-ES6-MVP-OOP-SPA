@@ -1,4 +1,4 @@
-import AbstractView from "./abstract-view.js";
+import SmartView from "./smart-view.js";
 import {siteBodyTag} from "../utils/utils.js";
 
 const filmCardTemplate = (film) => {
@@ -24,7 +24,7 @@ const filmCardTemplate = (film) => {
 </article>`;
 };
 
-export default class FilmCard extends AbstractView {
+export default class FilmCard extends SmartView {
   constructor(film) {
     super();
     this._film = film;

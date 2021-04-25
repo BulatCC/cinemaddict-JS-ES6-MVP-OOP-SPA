@@ -1,12 +1,15 @@
 import {render} from "../utils/render";
-import {remove, siteBodyTag, updateFilmCardByPopup} from "../utils/utils.js";
+import {remove, siteBodyTag} from "../utils/utils.js";
+import {UpdateType, UserAction} from "../consts.js";
 import FilmCard from "../view/film-card-template.js";
 import PopupFilmDetails from "../view/popup-film-details-template.js";
+import dayjs from "dayjs";
 
 let isPopupRendered = false;
 
 export default class Film {
-  constructor(changeData) {
+  constructor(changeData, filmsModel) {
+    this._filmsModel = filmsModel;
     this._changeData = changeData;
     this._handleFilmCardClick = this._handleFilmCardClick.bind(this);
     this._handleRemovePopup = this._handleRemovePopup.bind(this);
@@ -14,6 +17,8 @@ export default class Film {
     this._handleWatchListClick = this._handleWatchListClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleDeleteButtonClick = this._handleDeleteButtonClick.bind(this);
+    this._handleAddComment = this._handleAddComment.bind(this);
     this._popupComponent = null;
     this._filmCardComponent = null;
   }
@@ -44,6 +49,8 @@ export default class Film {
       this._popupComponent.setWatchListClickHandler(this._handleWatchListClick);
       this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
       this._popupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+      this._popupComponent.setDeleteButtonClickHandler(this._handleDeleteButtonClick);
+      this._popupComponent.seTaddCommentHandler(this._handleAddComment);
     }
   }
 
@@ -62,42 +69,80 @@ export default class Film {
     this._renderPopup();
   }
 
-  _markChangeState(evt) {
-    if (evt.target.classList.contains(`film-card__controls-item`)) {
-      evt.target.classList.toggle(`film-card__controls-item--active`);
-    }
-
-    // обновляет данные карточки при изменении в попапе
-    updateFilmCardByPopup(evt, this._filmCardComponent);
+  _handleWatchListClick() {
+    this._changeData(
+        UserAction.UPDATE_LIST,
+        UpdateType.PATCH,
+        Object.assign(
+            {},
+            this._filmCardData,
+            {
+              isInWatchlist: !this._filmCardData.isInWatchlist
+            }
+        ));
   }
 
-  _handleWatchListClick(evt) {
-    this._filmCardData.isInWatchlist = !this._filmCardData.isInWatchlist;
-    this._changeData(this._filmCardData);
-    this._markChangeState(evt);
-
-    // this._changeData(Object.assign(
-    //   {},
-    //   this._filmCardData,
-    //   {
-    //     isInWatchlist: !this._filmCardData.isInWatchlist
-    //   }
-    // ));
+  _handleWatchedClick() {
+    this._changeData(
+        UserAction.UPDATE_LIST,
+        UpdateType.PATCH,
+        Object.assign(
+            {},
+            this._filmCardData,
+            {
+              isWatched: !this._filmCardData.isWatched,
+              watchedTime: dayjs().format(`YYYY/MM/DD HH:mm`)
+            }
+        ));
   }
 
-  _handleWatchedClick(evt) {
-    this._filmCardData.isWatched = !this._filmCardData.isWatched;
-    this._changeData(this._filmCardData);
-    this._markChangeState(evt);
+  _handleFavoriteClick() {
+    this._changeData(
+        UserAction.UPDATE_LIST,
+        UpdateType.PATCH,
+        Object.assign(
+            {},
+            this._filmCardData,
+            {
+              isFavorite: !this._filmCardData.isFavorite
+            }
+        ));
   }
 
-  _handleFavoriteClick(evt) {
-    this._filmCardData.isFavorite = !this._filmCardData.isFavorite;
-    this._changeData(this._filmCardData);
-    this._markChangeState(evt);
+  _handleDeleteButtonClick(commentIdNumber) {
+    const commentId = this._filmCardData.comments.findIndex((comment) => comment.commentId === +commentIdNumber);
+    this._changeData(
+        UserAction.COMMENT_ACTION,
+        UpdateType.PATCH,
+        Object.assign(
+            {},
+            this._filmCardData.comments,
+            {
+              comments: this._filmCardData.comments.splice(commentId, 1)
+            }
+        ));
+  }
+
+  _handleAddComment(commentValue, emoji) {
+    this._changeData(
+        UserAction.COMMENT_ACTION,
+        UpdateType.PATCH,
+        Object.assign(
+            {},
+            this._filmCardData.comments,
+            {
+              comments: this._filmCardData.comments.push({
+                commentText: commentValue,
+                commentDate: dayjs().format(`YYYY/MM/DD HH:mm`),
+                emoji: emoji + `.png`
+              })
+            }
+        ));
   }
 
   destroy() {
     remove(this._filmCardComponent);
   }
 }
+
+
