@@ -10,7 +10,7 @@ const filterTemplate = (currentFilterType, filterNumber) => {
     <a href="#history" class="main-navigation__item ${currentFilterType === FilterType.WATCHED ? `main-navigation__item--active` : ``} " data-status="WATCHED">Watched <span class="main-navigation__item-count">${filterNumber.watched}</span></a>
     <a href="#favorites" class="main-navigation__item ${currentFilterType === FilterType.FAVORITES ? `main-navigation__item--active` : ``} " data-status="FAVORITES">Favorites <span class="main-navigation__item-count">${filterNumber.favorite}</span></a>
   </div>
-  <a href="#stats" class="main-navigation__additional">Stats</a>
+  <a href="#stats" class="main-navigation__additional ${currentFilterType === FilterType.STATS ? `main-navigation__item--active` : ``} " data-status="STATS">Stats</a>
 </nav>`;
 };
 

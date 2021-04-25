@@ -3,6 +3,7 @@ import {remove, siteBodyTag} from "../utils/utils.js";
 import {UpdateType, UserAction} from "../consts.js";
 import FilmCard from "../view/film-card-template.js";
 import PopupFilmDetails from "../view/popup-film-details-template.js";
+import dayjs from "dayjs";
 
 let isPopupRendered = false;
 
@@ -17,6 +18,7 @@ export default class Film {
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleDeleteButtonClick = this._handleDeleteButtonClick.bind(this);
+    this._handleAddComment = this._handleAddComment.bind(this);
     this._popupComponent = null;
     this._filmCardComponent = null;
   }
@@ -48,6 +50,7 @@ export default class Film {
       this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
       this._popupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
       this._popupComponent.setDeleteButtonClickHandler(this._handleDeleteButtonClick);
+      this._popupComponent.seTaddCommentHandler(this._handleAddComment);
     }
   }
 
@@ -69,7 +72,7 @@ export default class Film {
   _handleWatchListClick() {
     this._changeData(
         UserAction.UPDATE_LIST,
-        UpdateType.MINOR,
+        UpdateType.PATCH,
         Object.assign(
             {},
             this._filmCardData,
@@ -82,12 +85,13 @@ export default class Film {
   _handleWatchedClick() {
     this._changeData(
         UserAction.UPDATE_LIST,
-        UpdateType.MINOR,
+        UpdateType.PATCH,
         Object.assign(
             {},
             this._filmCardData,
             {
-              isWatched: !this._filmCardData.isWatched
+              isWatched: !this._filmCardData.isWatched,
+              watchedTime: dayjs().format(`YYYY/MM/DD HH:mm`)
             }
         ));
   }
@@ -95,7 +99,7 @@ export default class Film {
   _handleFavoriteClick() {
     this._changeData(
         UserAction.UPDATE_LIST,
-        UpdateType.MINOR,
+        UpdateType.PATCH,
         Object.assign(
             {},
             this._filmCardData,
@@ -108,13 +112,30 @@ export default class Film {
   _handleDeleteButtonClick(commentIdNumber) {
     const commentId = this._filmCardData.comments.findIndex((comment) => comment.commentId === +commentIdNumber);
     this._changeData(
-        UserAction.DELETE_COMMENT,
-        UpdateType.MINOR,
+        UserAction.COMMENT_ACTION,
+        UpdateType.PATCH,
         Object.assign(
             {},
             this._filmCardData.comments,
             {
               comments: this._filmCardData.comments.splice(commentId, 1)
+            }
+        ));
+  }
+
+  _handleAddComment(commentValue, emoji) {
+    this._changeData(
+        UserAction.COMMENT_ACTION,
+        UpdateType.PATCH,
+        Object.assign(
+            {},
+            this._filmCardData.comments,
+            {
+              comments: this._filmCardData.comments.push({
+                commentText: commentValue,
+                commentDate: dayjs().format(`YYYY/MM/DD HH:mm`),
+                emoji: emoji + `.png`
+              })
             }
         ));
   }

@@ -3,7 +3,6 @@ import {filter} from "../utils/filter.js";
 import {siteHeaderTag, siteMainTag, moviesNumberInDB, remove, sortByDate, sortByRating} from "../utils/utils.js";
 import {SortType, UserAction, UpdateType, FilterType} from "../consts.js";
 import UserProfile from "../view/user-profile-template.js";
-import FilterView from "../view/filter-template.js";
 import SortView from "../view/sort-template.js";
 import FilmSectionView from "../view/film-section-template.js";
 import ShowMoreButtonView from "../view/show-more-button-template.js";
@@ -17,41 +16,55 @@ export default class FilmBoard {
   constructor(filmsModel, filterModel) {
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
-    this._filmPresenter = {}; // тут должны храниться презентеры, чтобы иметь возможность удалить их
+    this._filmPresenter = {};
     this._renderedFilmCount = FILM_CARD_COUNT_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
     this._userProfileComponent = new UserProfile();
     this._filmSectionComponent = new FilmSectionView();
-    this._moviesNumberComponent = new MoviesNumberView();
     this._noFilmsComponent = new NoFilmsView();
     this._loadMoreButtonComponent = new ShowMoreButtonView();
-    this._filterViewComponent = new FilterView();
     this._sortViewComponent = null;
+
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+    this._filmsNumber = this._filmsModel.getFilms().length;
+    this._currentFilter = null;
+    this._moviesNumberComponent = new MoviesNumberView(this._filmsNumber);
   }
 
   init() {
-    const filmNumber = this._filmsModel.getFilms().length;
     this._renderUserProfile();
     this._renderSort();
-    this._renderFilmSection(filmNumber);
-    this._renderNoFilms(filmNumber);
+    this._renderFilmSection(this._filmsNumber);
+    this._renderNoFilms(this._filmsNumber);
     this._renderFilmsList();
     this._renderMoviesNumber();
   }
 
+  destroy() {
+    remove(this._sortViewComponent);
+    remove(this._filmSectionComponent);
+    this._clearFilmList(true);
+    this._sortViewComponent = null;
+  }
+
+
   _getFilms() {
-    const currentFilter = this._filterModel.getFilter();
+    this._currentFilter = this._filterModel.getFilter();
     const films = this._filmsModel.getFilms().slice();
     let sortedFilms = films;
 
-    if (currentFilter !== FilterType.ALL) {
-      sortedFilms = filter[currentFilter](films);
+    if (this._currentFilter === FilterType.STATS) {
+      return films;
+    }
+
+    if (this._currentFilter !== FilterType.ALL) {
+      sortedFilms = filter[this._currentFilter](films);
     }
 
     if (this._currentSortType === SortType.DEFAULT) {
@@ -70,18 +83,20 @@ export default class FilmBoard {
   }
 
   _renderUserProfile() {
-    render(siteHeaderTag, this._userProfileComponent, `beforeend`);
+    let isuserProfileComponentRendered = false;
+    if (!isuserProfileComponentRendered) {
+      render(siteHeaderTag, this._userProfileComponent, `beforeend`);
+      isuserProfileComponentRendered = true;
+    }
   }
 
   _renderSort() {
-    const filmsCount = this._filmsModel.getFilms().length;
-    if (filmsCount === 0) {
+    if (this._filmsNumber === 0) {
       return;
     }
     const prevSortComponent = this._sortViewComponent;
     this._sortViewComponent = new SortView(this._currentSortType);
     this._sortViewComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
-
     if (prevSortComponent === null) {
       render(siteMainTag, this._sortViewComponent, `beforeend`);
       return;
@@ -186,7 +201,7 @@ export default class FilmBoard {
         break;
       case UserAction.FILTER_CHANGE:
         break;
-      case UserAction.DELETE_COMMENT:
+      case UserAction.COMMENT_ACTION:
         this._clearFilmList(false);
         this._renderFilmsList();
         break;
@@ -198,11 +213,12 @@ export default class FilmBoard {
       case UpdateType.PATCH:
         break;
       case UpdateType.MINOR:
-
-        break;
-      case UpdateType.MAJOR:
         this._clearFilmList(true);
         this._renderFilmsList();
+        break;
+      case UpdateType.MAJOR:
+        this.init();
+
         break;
     }
   }

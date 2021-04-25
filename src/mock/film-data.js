@@ -8,19 +8,23 @@ const DIRECTOR = [`Anthony Mann`, `John Deer`, `Alan Wake`, `Charlie Chaplin`, `
 const WRITERS = [`Anne Wigton`, `Heinz Herald`, `Richard Weil`, `Gergard Hast`, `Hasturan Strider`];
 const ACTORS = [`Erich von Stroheim`, `Mary Beth Hughes`, `Dan Duryea`, `Sasha Gray`];
 const COUNTRIES = [`USSR`, `USA`, `North Korea`];
-const GENRES = [`Drama`, `Film-Noir`, `Mystery`];
+const GENRES = [`Drama`, `Film-Noir`, `Mystery`, `Sci-Fi`];
 const DESCRIPTION = [`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget.`, `Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`, `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`, `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis.`, `Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`];
 const EMOJI = [`angry.png`, `puke.png`, `sleeping.png`, `smile.png`];
 const COMMENT_TEXT = [`Interesting setting and a good cast`, `Booooooooooring`, `Very very old. Meh`, `Almost two hours? Seriously?`, `Cool picture`];
 const COMMENT_AUTHOR = [`Ivan`, `Hitler`, `Vasya`, `Bethoven`, `Cannibal`];
 
-const generateDate = () => {
+const generateDate = (comment) => {
   const minute = getRandomInteger(0, 59).toString();
   const hour = getRandomInteger(0, 23).toString();
   const day = getRandomInteger(1, 30).toString();
-  const month = getRandomInteger(0, 11).toString();
-  const year = getRandomInteger(1970, 2020).toString();
-  const randomDate = dayjs(year + month + day + hour + `:` + minute);
+  const month = getRandomInteger(1, 4).toString();
+  const year = getRandomInteger(2020, 2021).toString();
+  const randomDate = dayjs(year + ` ` + month + ` ` + day + ` ` + hour + `:` + minute);
+
+  if (comment) {
+    return dayjs(year + `-` + month + `-` + day + `-` + hour + `:` + minute).format(`YYYY/MM/DD HH:mm`).toString();
+  }
 
   return {
     minute: randomDate.format(`mm`),
@@ -39,7 +43,7 @@ const generateComment = () => {
       emoji: EMOJI[getRandomInteger(0, EMOJI.length - 1)],
       commentText: COMMENT_TEXT[getRandomInteger(0, COMMENT_TEXT.length - 1)],
       commentAuthor: COMMENT_AUTHOR[getRandomInteger(0, COMMENT_AUTHOR.length - 1)],
-      commentDate: generateDate(),
+      commentDate: generateDate(true),
       commentId: getRandomInteger(0, 100000)
     });
   }
@@ -48,6 +52,20 @@ const generateComment = () => {
 };
 
 const generateFilm = () => {
+  let isWatchedFilm = null;
+  let watchedTimeFilm = null;
+  const watchedData = () =>{
+    if (Boolean(getRandomInteger(0, 1)) === true) {
+      isWatchedFilm = true;
+      watchedTimeFilm = generateDate(true);
+    } else {
+      isWatchedFilm = false;
+      watchedTimeFilm = null;
+    }
+  };
+
+  watchedData();
+
   return {
     filmCover: FILM_COVERS[getRandomInteger(0, FILM_COVERS.length - 1)],
     filmName: FILM_NAMES[getRandomInteger(0, FILM_NAMES.length - 1)],
@@ -66,10 +84,11 @@ const generateFilm = () => {
     description: getRandomElements(DESCRIPTION, true),
     ageLimit: getRandomInteger(0, 18),
     isInWatchlist: Boolean(getRandomInteger(0, 1)),
-    isWatched: Boolean(getRandomInteger(0, 1)),
+    isWatched: isWatchedFilm,
     isFavorite: Boolean(getRandomInteger(0, 1)),
     comments: generateComment(),
-    id: getRandomInteger(0, 1000)
+    id: getRandomInteger(0, 1000),
+    watchedTime: watchedTimeFilm
   };
 };
 

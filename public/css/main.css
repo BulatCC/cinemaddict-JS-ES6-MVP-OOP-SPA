@@ -260,7 +260,6 @@ button {
   font-weight: 500;
   padding: 0 10px;
   width: 1em;
-  pointer-events: none;
 }
 
 .main-navigation__additional {
@@ -364,10 +363,6 @@ button {
   margin-right: 0.5em;
 }
 
-.film-card__title:hover {
-  cursor: pointer;
-}
-
 .film-card__rating,
 .film-card__rating--good {
   color: var(--text-color-good);
@@ -395,10 +390,6 @@ button {
   transition: bottom 0.2s ease-out;
   width: 100%;
   z-index: 1;
-}
-
-.film-card__poster:hover {
-  cursor: pointer;
 }
 
 .film-card--no-controls .film-card__poster {
@@ -1113,3 +1104,30 @@ button {
   padding-top: 50px;
   padding-bottom: 50px;
 }
+
+@keyframes shake {
+  0%,
+  100% {
+      transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+      transform: translateX(-5px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+      transform: translateX(5px);
+  }
+}
+
+.shake {
+  animation: shake 0.6s;
+}
+

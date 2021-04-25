@@ -1,15 +1,16 @@
 import AbstractView from "./abstract-view.js";
 
-export const moviesNumberTempalte = () => {
-  return `<p>130 291 movies inside</p>`;
+export const moviesNumberTempalte = (moviesNumber) => {
+  return `<p>${moviesNumber} movies inside</p>`;
 };
 
 export default class MoviesNumber extends AbstractView {
-  constructor() {
+  constructor(moviesNumber) {
     super();
+    this._moviesNumber = moviesNumber;
   }
 
   getTemplate() {
-    return moviesNumberTempalte();
+    return moviesNumberTempalte(this._moviesNumber);
   }
 }
