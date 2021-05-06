@@ -92,4 +92,6 @@ export const statsChart = (rating, data) => {
     });
     return filmRatingValue;
   }
+
+  return ``;
 };

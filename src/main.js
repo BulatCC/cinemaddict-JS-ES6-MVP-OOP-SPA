@@ -11,7 +11,6 @@ import FilterPresenter from "./presenter/filter-presenter.js";
 
 const FILM_CARD_COUNT = 50;
 const films = new Array(FILM_CARD_COUNT).fill().map(generateFilm);
-console.log(films)
 
 const filterModel = new FilterModel();
 const filmsModel = new FilmsModel();
